@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zombie Apocalypse: High Scores</title>>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div id="app-container">
+        <!-- High Scores Screen -->
+        <div id="high-scores" class="screen active">
+            <div class="back-button-container">
+                <button class="back-btn">&larr; Back to Menu</button>
+            </div>
+            
+            <h1>High Scores</h1>
+            
+            <div class="difficulty-filter">
+                <h3>Filter by Difficulty:</h3>
+                <div class="difficulty-buttons">
+                    <button data-difficulty="all" class="difficulty-btn active">All</button>
+                    <button data-difficulty="easy" class="difficulty-btn">Easy</button>
+                    <button data-difficulty="medium" class="difficulty-btn">Medium</button>
+                    <button data-difficulty="hard" class="difficulty-btn">Hard</button>
+                </div>
+            </div>
+            
+            <div class="scores-container">
+                <div class="score-header">
+                    <div>Rank</div>
+                    <div>Player</div>
+                    <div>Score</div>
+                    <div>Time</div>
+                    <div>Difficulty</div>
+                    <div>Date</div>
+                </div>
+                <div id="scores-list" class="scores-list">
+                    <!-- Scores will be loaded here dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Back button functionality
+            document.querySelector('.back-btn').addEventListener('click', function() {
+                window.location.href = '/'; // Redirect to main menu
+            });
+
+            // Load scores when page loads
+            loadScores('all');
+
+            // Difficulty filter buttons
+            document.querySelectorAll('.difficulty-buttons .difficulty-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.difficulty-buttons .difficulty-btn').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    const difficulty = this.getAttribute('data-difficulty');
+                    loadScores(difficulty);
+                });
+            });
+        });
+
+        async function loadScores(difficulty) {
+            try {
+                const response = await fetch(`/get_scores?difficulty=${difficulty}`);
+                const scores = await response.json();
+                
+                const scoresList = document.getElementById('scores-list');
+                scoresList.innerHTML = '';
+                
+                if (scores.length === 0) {
+                    scoresList.innerHTML = '<div class="no-scores">No scores yet. Be the first to play!</div>';
+                    return;
+                }
+                
+                scores.forEach((score, index) => {
+                    const scoreElement = document.createElement('div');
+                    scoreElement.className = 'score-item';
+                    scoreElement.innerHTML = `
+                        <div>${index + 1}</div>
+                        <div>${score.player_name || 'Anonymous'}</div>
+                        <div>${score.score}</div>
+                        <div>${score.time}s</div>
+                        <div>${score.difficulty}</div>
+                        <div>${new Date(score.timestamp).toLocaleDateString()}</div>
+                    `;
+                    scoresList.appendChild(scoreElement);
+                });
+            } catch (error) {
+                console.error('Error loading scores:', error);
+                document.getElementById('scores-list').innerHTML = 
+                    '<div class="error">Error loading scores. Please try again later.</div>';
+            }
+        }
+    </script>
+
+    <style>
+        /* Add these styles at the top of your <style> section */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: url('/static/images/main-bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            height: 100vh;
+            overflow: auto;
+            position: relative;
+        }
+
+        /* Dark overlay for better readability */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: -1;
+        }
+
+        /* Make sure content sits above the background */
+        #app-container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        /* Add these styles to your existing style.css */
+        #high-scores {
+            max-width: 900px;
+            background-image: url('images/main-bg.jpg');
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .difficulty-filter {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .scores-container {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .score-header, .score-item {
+            display: grid;
+            grid-template-columns: 50px 150px 80px 80px 100px 120px;
+            gap: 10px;
+            padding: 10px;
+            align-items: center;
+        }
+
+        .score-header {
+            font-weight: bold;
+            border-bottom: 2px solid #f44336;
+            margin-bottom: 10px;
+        }
+
+        .score-item:nth-child(odd) {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .score-item:nth-child(even) {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .no-scores, .error {
+            text-align: center;
+            padding: 20px;
+            color: #aaa;
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 768px) {
+            .score-header, .score-item {
+                grid-template-columns: 30px 1fr 1fr;
+                grid-template-rows: auto auto;
+            }
+            
+            .score-header div:nth-child(4),
+            .score-header div:nth-child(5),
+            .score-header div:nth-child(6),
+            .score-item div:nth-child(4),
+            .score-item div:nth-child(5),
+            .score-item div:nth-child(6) {
+                grid-row: 2;
+            }
+            
+            .score-header div:nth-child(4) { grid-column: 1; }
+            .score-header div:nth-child(5) { grid-column: 2; }
+            .score-header div:nth-child(6) { grid-column: 3; }
+            
+            .score-item div:nth-child(4) { grid-column: 1; }
+            .score-item div:nth-child(5) { grid-column: 2; }
+            .score-item div:nth-child(6) { grid-column: 3; }
+        }
+    </style>
+</body>
+</html>

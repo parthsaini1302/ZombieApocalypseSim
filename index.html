@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zombie Apocalypse: Human Rescue</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div id="app-container">
+        <!-- Main Menu Screen -->
+        <div id="main-menu" class="screen active">
+            <div class="logo-container">
+                <h1>ZOMBIE APOCALYPSE</h1>
+                <p class="tagline">Human Rescue Mission</p>
+            </div>
+            <div class="name-input-container">
+                <input type="text" id="player-name" placeholder="Enter your name" maxlength="15">
+                <div class="input-underline"></div>
+            </div>
+            <div class="menu-options">
+                <button id="start-game-btn" class="menu-btn">Start Game</button>
+                <button id="how-to-play-btn" class="menu-btn">How to Play</button>
+                <a href="/high-scores" class="menu-btn" id="high-scores-link">High Scores</a>
+            </div>
+            
+            <div class="difficulty-selector">
+                <h3>Select Difficulty:</h3>
+                <div class="difficulty-buttons">
+                    <button data-difficulty="easy" class="difficulty-btn">Easy</button>
+                    <button data-difficulty="medium" class="difficulty-btn active">Medium</button>
+                    <button data-difficulty="hard" class="difficulty-btn">Hard</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- How to Play Screen -->
+        <div id="how-to-play" class="screen">
+            <div class="tutorial-content">
+                <h2>How to Play</h2>
+                
+                <div class="tutorial-steps">
+                    <div class="tutorial-step">
+                        <div class="step-icon">1</div>
+                        <div class="step-content">
+                            <h3>Rescue Humans</h3>
+                            <p>Click on or move to green humans to rescue them. They'll follow you to safety.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tutorial-step">
+                        <div class="step-icon">2</div>
+                        <div class="step-content">
+                            <h3>Lead to Safety</h3>
+                            <p>Bring rescued humans to the white safe zone in the top-right corner.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tutorial-step">
+                        <div class="step-icon">3</div>
+                        <div class="step-content">
+                            <h3>Avoid Zombies</h3>
+                            <p>Stay away from red zombies! They'll reduce your health if they catch you.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tutorial-step">
+                        <div class="step-icon">4</div>
+                        <div class="step-content">
+                            <h3>Controls</h3>
+                            <p>Use mouse clicks or arrow keys to move. You can click anywhere on the map.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="legend">
+                    <h3>Game Legend:</h3>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #2196F3;"></div>
+                        <span>Player (You)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #4CAF50;"></div>
+                        <span>Humans to Rescue</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #F44336;"></div>
+                        <span>Zombies (Avoid!)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: white;"></div>
+                        <span>Safe Zone</span>
+                    </div>
+                </div>
+                
+                
+                <!-- Add this Back to Menu button -->
+                
+            </div>
+            <div class="back-to-menu-container">
+                <a href="/" class="action-btn back-to-menu-btn">Back to Menu</a>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="game-header">
+                <div class="game-stats">
+                    <div>Humans Left: <span id="humansRemaining">0</span></div>
+                    <div>Rescued: <span id="rescuedCount">0</span></div>
+                    <div>Health: <span id="playerHealth">3</span></div>
+                    <div>Time: <span id="gameTime">0</span>s</div>
+                    <div>Difficulty: <span id="difficulty-display">Medium</span></div>
+                </div>
+                <button id="restart-btn" class="restart-btn">Restart</button>
+                <a href="/" class="action-btn">Back to Menu</a>  <!-- Simple link to root -->
+            </div>
+            
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="game-over" class="screen">
+            <div class="game-over-content">
+                <h2 id="result-title">Mission Accomplished!</h2>
+                <p id="result-message"></p>
+                <div class="button-group">
+                    <button id="play-again-btn" class="action-btn">Play Again</button>
+                    <button id="change-difficulty-btn" class="action-btn">Change Difficulty</button>
+                    <button id="main-menu-btn" class="action-btn">Main Menu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/game.js"></script>
+    
+    
+</body>
+</html>
